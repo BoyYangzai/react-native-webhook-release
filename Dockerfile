@@ -17,7 +17,7 @@ RUN pnpm install
 COPY . .
 
 # 暴露应用程序运行的端口
-EXPOSE 9995
+EXPOSE 8881
 
 # 定义容器启动时运行的命令
 CMD ["pnpm", "start"]

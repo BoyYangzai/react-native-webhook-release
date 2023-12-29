@@ -7,12 +7,16 @@ const PORT = process.env.PORT || 8881;
 
 app.use(bodyParser.json());
 
-const larkCard = ({ title, content, link }) => {
+const larkCard = ({ title, content, link, isHotUpdate }) => {
   return {
     "config": { "wide_screen_mode": true },
     "header": { "template": "blue", "title": { "tag": "plain_text", "content": title } },
     "elements":
-      [{ "tag": "markdown", "content": content }, { "alt": { "content": "", "tag": "plain_text" }, "img_key": "img_v2_e5d9761f-3b78-47f2-9fa6-f8438c46861h", "tag": "img", "mode": "crop_center", "compact_width": false, "custom_width": 278 }, { "tag": "action", "actions": [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": link }] }]
+      [{ "tag": "markdown", "content": content }, { "alt": { "content": "", "tag": "plain_text" }, "img_key": "img_v2_e5d9761f-3b78-47f2-9fa6-f8438c46861h", "tag": "img", "mode": "crop_center", "compact_width": false, "custom_width": 278 },
+      {
+        "tag": "action", "actions": isHotUpdate ? [] :
+          [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": link }]
+      }]
   }
 }
 const larkHookMap = {
@@ -20,14 +24,18 @@ const larkHookMap = {
   'blink': 'https://open.larksuite.com/open-apis/bot/v2/hook/ad2e03d0-59e6-4a6b-b721-21bc13fe69e6'
 }
 
+const updateType = ['应用更新提醒', '应用热更新提醒']
+
 app.post('/webhook', (req, res) => {
   const data = req.body
   const { action, type, appName, link, content: message, os_version, build_version, notes } = data
   console.log(data)
-  const title = `⚡️ ${type === '应用更新提醒' ? 'Application Beta Updates' : action} - ${appName}`
-  const content = `<font color='red'>${type === '应用更新提醒' ? `New Beta Version - ${os_version}(${build_version}build) Published 🎉🎉🎉` : message}</font>\n***\n**🔥 New Features：**\n<font>${notes}<font>\n<at id=all></at>`
+  const isHotUpdate = type == '应用热更新提醒'
+  const title = `⚡️ ${updateType.includes(type) ? 'Application Beta Updates' : action} - ${appName}`
+  const content = `<font color='red'>${updateType.includes(type) ? `New Beta Version - ${os_version}(${build_version}build) ${isHotUpdate ? "HotUpdated 🔥🔥🔥" : "Published 🎉🎉🎉"}` : message
+    }</font >\n ***\n **🔥 New Features：**\n <font> ${notes} <font>\n <at id=all ></at>`
   if (req.body) {
-    axios.post(getLarkHookByAppName(appName), { "msg_type": "interactive", card: larkCard({ title, content, link }) }).then(res => console.log(res))
+    axios.post(getLarkHookByAppName(appName), { "msg_type": "interactive", card: larkCard({ title, content, link, isHotUpdate }) }).then(res => console.log(res))
   }
   res.sendStatus(200);
 });
