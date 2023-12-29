@@ -14,7 +14,9 @@ const larkCard = ({ title, content, link, isHotUpdate }) => {
     "elements":
       [{ "tag": "markdown", "content": content }, { "alt": { "content": "", "tag": "plain_text" }, "img_key": "img_v2_e5d9761f-3b78-47f2-9fa6-f8438c46861h", "tag": "img", "mode": "crop_center", "compact_width": false, "custom_width": 278 },
       {
-        "tag": "action", "actions": isHotUpdate ? [] :
+        "tag": "action", "actions": isHotUpdate ?
+          [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": `${appName.toLowerCase()}://app/home` }]
+          :
           [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": link }]
       }]
   }
@@ -35,7 +37,7 @@ app.post('/webhook', (req, res) => {
   const content = `<font color='red'>${updateType.includes(type) ? `New Beta Version - ${os_version}(${build_version}build) ${isHotUpdate ? "HotUpdated 🔥🔥🔥" : "Published 🎉🎉🎉"}` : message
     }</font >\n ***\n **🔥 New Features：**\n <font> ${notes} <font>\n <at id=all ></at>`
   if (req.body) {
-    axios.post(getLarkHookByAppName(appName), { "msg_type": "interactive", card: larkCard({ title, content, link, isHotUpdate }) }).then(res => console.log(res))
+    axios.post(getLarkHookByAppName(appName), { "msg_type": "interactive", card: larkCard({ title, content, link, isHotUpdate, appName }) }).then(res => console.log(res))
   }
   res.sendStatus(200);
 });
