@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8881;
 
 app.use(bodyParser.json());
 
-const larkCard = ({ title, content, link, isHotUpdate }) => {
+const larkCard = ({ title, content, link, isHotUpdate, appName }) => {
   return {
     "config": { "wide_screen_mode": true },
     "header": { "template": "blue", "title": { "tag": "plain_text", "content": title } },
