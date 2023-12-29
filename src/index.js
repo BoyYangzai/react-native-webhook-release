@@ -15,7 +15,7 @@ const larkCard = ({ title, content, link, isHotUpdate }) => {
       [{ "tag": "markdown", "content": content }, { "alt": { "content": "", "tag": "plain_text" }, "img_key": "img_v2_e5d9761f-3b78-47f2-9fa6-f8438c46861h", "tag": "img", "mode": "crop_center", "compact_width": false, "custom_width": 278 },
       {
         "tag": "action", "actions": isHotUpdate ?
-          [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": `${appName.toLowerCase()}://app/home` }]
+          [{ "tag": "button", "text": { "tag": "plain_text", "content": "Open the App" }, "type": "primary", "url": `${appName.toLowerCase()}://app/home` }]
           :
           [{ "tag": "button", "text": { "tag": "plain_text", "content": "Download App" }, "type": "primary", "url": link }]
       }]
